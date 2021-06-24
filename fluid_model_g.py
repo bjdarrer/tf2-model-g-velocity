@@ -2,10 +2,15 @@ import warnings
 import tensorflow as tf
 import numpy as np
 import util
+import io # BJD added 18.11.2020
 from pde_solver import PDESolverDx
 from integrators.model_g import polynomial_order_4_centered as reaction_integrator
 from integrators.model_g import steady_state
+#from render_video import c1
 
+#c1 = 0
+
+# BJD note test - velocity_fields_1 new branch 23 June 2021
 
 DEFAULT_PARAMS = {
     "A": 3.42,
@@ -29,6 +34,8 @@ class FluidModelG(PDESolverDx):
     """
     Model G on a fluid medium
     """
+    # BJD concentration_vel_G_x 28.1.2021
+    #def __init__(self, concentration_G, concentration_X, concentration_Y, concentration_vel_G_x, u, dx, dt=None, params=None, source_functions=None):
     def __init__(self, concentration_G, concentration_X, concentration_Y, u, dx, dt=None, params=None, source_functions=None):
         if dt is None:
             dt = 0.1 * dx
@@ -36,14 +43,15 @@ class FluidModelG(PDESolverDx):
         if dt > 0.5 * dx:
             warnings.warn("Time increment {} too large for simulation stability with grid constant {}".format(dt, dx))
 
-        super().__init__(dx, dt, concentration_G.shape)
-
+        #super().__init__(dx, dt, concentration_G.shape) # BJD original 13.6.2021
+        super().__init__(dx, dt, concentration_G.shape, concentration_X.shape, concentration_Y.shape) # BJD change 13.6.2021
         self.params = params or DEFAULT_PARAMS
         self.source_functions = source_functions or {}
 
         self.G = tf.constant(concentration_G, 'float64')
         self.X = tf.constant(concentration_X, 'float64')
         self.Y = tf.constant(concentration_Y, 'float64')
+        #self.vel_G_x = tf.constant(concentration_vel_G_x, 'float64')   # BJD 28.1.2021
 
         G0, X0, Y0 = steady_state(self.params['A'], self.params['B'], self.params['k2'], self.params['k-2'], self.params['k5'])
 
@@ -55,9 +63,17 @@ class FluidModelG(PDESolverDx):
         if self.dims == 1:
             raise ValueError("1D not supported")
         elif self.dims == 2:
-            self.u = tf.constant(u[0], 'float64')
-            self.v = tf.constant(u[1], 'float64')
+            #self.u = tf.constant(u[0], 'float64') # original 2 lines
+            #self.v = tf.constant(u[1], 'float64')
 
+            #BJD adaptions - 6 lines below 9.6.2021 
+            self.u_X = tf.constant(u[0], 'float64')
+            self.v_X = tf.constant(u[1], 'float64')
+            self.u_Y = tf.constant(u[2], 'float64')
+            self.v_Y = tf.constant(u[3], 'float64')
+            self.u_G = tf.constant(u[4], 'float64')
+            self.v_G = tf.constant(u[5], 'float64')
+                        
             omega_x, omega_y = self.omega_x, self.omega_y
             omega2 = omega_x**2 + omega_y**2
             omega2_x = tf.constant(omega2 + 1/3 * omega_x * (omega_x + omega_y), "complex128")
@@ -116,7 +132,10 @@ class FluidModelG(PDESolverDx):
 
                 return u, v, divergence
 
-            def diffusion_advection_integrator(G, X, Y, u, v, divergence):
+            #def diffusion_advection_integrator(G, X, Y, vel_G_x, u, v, divergence):
+            #def diffusion_advection_integrator(G, X, Y, u, v, divergence): # BJD original 10.6.2021
+            def diffusion_advection_integrator(G, X, Y, u_X, v_X, u_Y, v_Y, u_G, v_G, divergence1,divergence2, divergence3): # BJD original 10.6.2021
+            
                 f_G = self.fft(tf.cast(G, 'complex128'))
                 f_X = self.fft(tf.cast(X, 'complex128'))
                 f_Y = self.fft(tf.cast(Y, 'complex128'))
@@ -136,10 +155,19 @@ class FluidModelG(PDESolverDx):
                 Y_dx = tf.cast(self.ifft(f_Y * self.kernel_dx), 'float64')
                 Y_dy = tf.cast(self.ifft(f_Y * self.kernel_dy), 'float64')
 
-                G -= (u*G_dx + v*G_dy + G*divergence) * self.dt
-                X -= (u*X_dx + v*X_dy + X*divergence) * self.dt
-                Y -= (u*Y_dx + v*Y_dy + Y*divergence) * self.dt
-                return G, X, Y
+                #G -= (u*G_dx + v*G_dy + G*divergence) * self.dt # BJD original
+                G -= (u_G*G_dx + v_G*G_dy + G*divergence1) * self.dt # BJD change 10.6.2021
+                #X -= (u*X_dx + v*X_dy + X*divergence) * self.dt # BJD original
+                #Y -= (u*Y_dx + v*Y_dy + Y*divergence) * self.dt # BJD original
+                X -= (u_X*X_dx + v_X*X_dy + X*divergence2) * self.dt # BJD change 10.6.2021
+                Y -= (u_Y*Y_dx + v_Y*Y_dy + Y*divergence3) * self.dt # BJD change 10.6.2021
+
+                #vel_G_x = tf.cast(u*G_dx, 'float64')
+                #vel_G_x -= u*G_dx
+                #print("Value of u*G_dx: ", u*G_dx)
+                #np.savetxt("/home/brendan/software/tf2-model-g/arrays/quiver_array13/G.txt", vel_G_x)   
+                return G, X, Y     #, vel_G_x #, u*G_dx #, G_velocity_field_x
+                
         elif self.dims == 3:
             self.u = tf.constant(u[0], 'float64')
             self.v = tf.constant(u[1], 'float64')
@@ -244,6 +272,7 @@ class FluidModelG(PDESolverDx):
                 G -= (u*G_dx + v*G_dy + w*G_dz + (G+G0)*divergence) * self.dt
                 X -= (u*X_dx + v*X_dy + w*X_dz + (X+X0)*divergence) * self.dt
                 Y -= (u*Y_dx + v*Y_dy + w*Y_dz + (Y+Y0)*divergence) * self.dt
+
                 return G, X, Y
         else:
             raise ValueError('Only up to 3D supported')
@@ -264,15 +293,55 @@ class FluidModelG(PDESolverDx):
             self.params['density_X'] * self.X +
             self.params['density_Y'] * self.Y
         )
-        rho = tf.math.log(self.params['base-density'] + density_of_reactants)
+        # rho = tf.math.log(self.params['base-density'] + density_of_reactants) # BJD original here
+        rho1 = tf.math.log(self.params['base-density1'] + density_of_reactants) # BJD added 10.6.2021
+        rho2 = tf.math.log(self.params['base-density2'] + density_of_reactants) # BJD added 10.6.2021
+        rho3 = tf.math.log(self.params['base-density3'] + density_of_reactants) # BJD added 10.6.2021
+
         if self.dims == 2:
-            u, v = self.u, self.v  # Store unintegrated flow so that we're on the same timestep
-            self.u, self.v, divergence = self.flow_integrator(rho, self.u, self.v)
-            self.G, self.X, self.Y = self.diffusion_advection_integrator(self.G, self.X, self.Y, u, v, divergence)
+            #c1 = c1 + 1 # BJD added 18.11.2020
+            #u, v = self.u, self.v  # Store unintegrated flow so that we're on the same timestep --- BJD original line 9.6.2021
+            u_X, v_X = self.u_X, self.v_X  # Store unintegrated flow so that we're on the same timestep --- BJD added 9.6.2021
+            u_Y, v_Y = self.u_Y, self.v_Y  # Store unintegrated flow so that we're on the same timestep --- BJD added 9.6.2021
+            u_G, v_G = self.u_G, self.v_G  # Store unintegrated flow so that we're on the same timestep --- BJD added 9.6.2021
+
+            #self.u, self.v, divergence = self.flow_integrator(rho, self.u, self.v) -BJD original line 9.6.2021
+            self.u_X, self.v_X, divergence1 = self.flow_integrator(rho1, self.u_X, self.v_X) #--- BJD added 9.6.2021
+            self.u_Y, self.v_Y, divergence2 = self.flow_integrator(rho2, self.u_Y, self.v_Y) #--- BJD added 9.6.2021
+            self.u_G, self.v_G, divergence3 = self.flow_integrator(rho3, self.u_G, self.v_G) #--- BJD added 9.6.2021
+
+            #BJD altered line below ----- G_velocity_field_x
+            #self.G, self.X, self.Y, self.u*G_dx = self.diffusion_advection_integrator(self.G, self.X, self.Y, u, v, divergence)
+            #self.G, self.X, self.Y, self.vel_G_x = self.diffusion_advection_integrator(self.G, self.X, self.Y, self.vel_G_x, u, v, divergence)
+            #self.G, self.X, self.Y = self.diffusion_advection_integrator(self.G, self.X, self.Y, u, v, divergence) # BJD original line 10.6.2021
+            self.G, self.X, self.Y = self.diffusion_advection_integrator(self.G, self.X, self.Y, u_X, v_X, u_Y, v_Y, u_G, v_G, divergence1, divergence2, divergence3) #--- BJD added 10.6.2021
+            print(" Value of X: ", self.X) # ***** BJD inserted this line 13.11.2020 *****
+            #print("Value of u: ", self.u) # ***** BJD inserted this line 28.1.2021 *****
+# =======================BJD 18.11.2020================================================      
+
+            # this below line worked!! BJD
+            #np.savetxt("/home/brendan/software/tf2-model-g/arrays/array28/X.txt", self.X) # https://www.python-course.eu/numpy_reading_writing.php
+            #np.savetxt("/home/brendan/software/tf2-model-g/arrays/array28/Y.txt", self.Y)
+            #np.savetxt("/home/brendan/software/tf2-model-g/arrays/array28/G.txt", self.G)
+
+            #np.savetxt("/home/brendan/software/tf2-model-g/arrays/quiver_array13/G.txt", u*G_dx)
+
+            #print("Value of u*G_dx: ", self.G_velocity_field_x)
+            #np.savetxt("/home/brendan/software/tf2-model-g/arrays/quiver_array30/u.txt", self.u) # BJD 1.2.2021
+            #np.savetxt("/home/brendan/software/tf2-model-g/arrays/quiver_array30/v.txt", self.v) # BJD 1.2.2021
+
+# ========================================================================================     
         elif self.dims == 3:
             u, v, w = self.u, self.v, self.w  # Store unintegrated flow so that we're on the same timestep
             self.u, self.v, self.w, divergence = self.flow_integrator(rho, self.u, self.v, self.w)
             self.G, self.X, self.Y = self.diffusion_advection_integrator(self.G, self.X, self.Y, u, v, w, divergence)
+            print(" Value of u: ", self.u) # ***** BJD inserted this line 17.1.2021 *****
+# =======================BJD 22.4.2021================================================      
+
+            #np.savetxt("/home/brendan/software/tf2-model-g/arrays/quiver3D_array31/u.txt", self.u) # BJD 22.4.2021
+            #np.savetxt("/home/brendan/software/tf2-model-g/arrays/quiver3D_array31/v.txt", self.v) # BJD 22.4.2021
+            #np.savetxt("/home/brendan/software/tf2-model-g/arrays/quiver3D_array31/w.txt", self.w) # BJD 22.4.2021
+# ========================================================================================    
 
         zero = lambda t: 0
         source_G = self.source_functions.get('G', zero)(self.t)
@@ -282,6 +351,13 @@ class FluidModelG(PDESolverDx):
         self.X += self.dt * source_X
         self.Y += self.dt * source_Y
         self.t += self.dt
+    
+        #np.savetxt("file_" + str(c1) + ".txt", self.X)
+        #with io.open("file_" + str(c1) + ".txt", 'w', encoding='utf-8') as f:
+            #f.write(str(func(c1))
+        #if c1 == 10:
+        #    c1 = 0
+        
 
     def numpy(self):
         if self.dims == 2:

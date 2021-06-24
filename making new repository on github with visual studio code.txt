@@ -1,0 +1,114 @@
+making new repository on github with visual studio code
+
+
+
+brendan@Desktop:~$ ls
+ Desktop
+ Documents
+ Downloads
+ model_g_particle_in_3d.avi
+ model_g_particle_in_3d.eps
+ model_g_particle_in_3d.png
+ mono_crash.d4716fb0.0.json
+ mono_crash.d4716fb0.1.json
+ mono_crash.d4716fb0.2.json
+ mono_crash.d4716fb0.3.json
+ mono_crash.d4716fb0.4.json
+ mono_crash.mem.146101.1.blob
+ mono_crash.mem.67087.1.blob
+ Music
+ nucleation_3D___1_seed__y0_x0____A3.42_B13.5_dG2_dX1_dY1.5_bd35_vis0.4_sos1_R12_res160pVD20_OS1_ST20___TEST_7th_146.mp4
+ nucleation_3D___1_seed__y0_x0__R12_res160pVD20_OS1_ST20___TEST_6th_145.mp4
+ nucleation_3D___1_seed__y0_x0__R20_VD100_OS2_ST100___TEST.mp4
+ nucleation_and_motion_in_fluid_2D___1_seeds__x-12__t10000___gradient_trapezoid_4g___59.mp4
+ nucleation_and_motion_in_fluid_2D___1_seeds__x-12__t10000___no_gradient____61.mp4
+ nucleation_and_motion_in_fluid_2D___1_seeds__x+32__t20000___gradient_trapezoid_4g___58.mp4
+ nucleation_and_motion_in_fluid_2D___1_seed__y0_x0____R8_VD30_OS2_ST100__velocity_quiver___148.mp4
+ nucleation_and_motion_in_fluid_2D___1_seed__y0_x0____R8_VD30_OS2_ST100__velocity_quiver__5thcell_150.mp4
+'nucleation_and_motion_in_fluid_2D___1_seed__y0_x+50_G_gap=+-5__R60_VD110_OS60_ST15000___gradient_Piecewise_diffraction__2f_____134.mp4'
+ nucleation_and_motion_in_fluid_2D___1_seed__y0_x+50_g_wall_20ht__R60_VD110_OS60_ST15000___gradient_Piecewise_quantum_tunnelling__3c___133.mp4
+ nucleation_and_motion_in_fluid_2D___1_seed__y0_x+50___R60_VD110_OS60_ST15000___gradient_Piecewise_diffraction__2f_____132.mp4
+ nucleation_and_motion_in_fluid_2D___1_seed__y0_x+50___R60_VD110_OS60_ST15000___gradient_Piecewise_diffraction__2f_____132___speededUpx10.mp4
+ nucleation_and_motion_in_fluid_2D___1_seed__y0_x+50___R60_VD110_OS60_ST15000___gradient_Piecewise_diffraction__4f_____126.mp4
+ nucleation_and_motion_in_fluid_2D___1_seed__y0_x+50___R60_VD110_OS60_ST15000___gradient_Piecewise_quantum_tunnelling__3b___128.mp4
+ nucleation_and_motion_in_fluid_2D___1_seed__y0_x+50___R60_VD30_OS2_ST100___gradient_Piecewise_diffraction__2f_____130.mp4
+ nucleation_and_motion_in_fluid_2D___1_seed__y0_x+50___R60_VD30_OS2_ST100___gradient_Piecewise_diffraction__2f_____131.mp4
+ nucleation_and_motion_in_fluid_2D___1_seed__y0_x+50___R60_VD90_OS40_ST10000___gradient_Piecewise_quantum_tunneling_2f___109.mp4
+'nucleation_and_motion_in_fluid_2D_2Dsurf_in_3D___1_seed__y0_x+35___R16_n=2000_OS10_ST1000___no_gradient___120.mp4'
+ nucleation_and_motion_in_fluid_2D___2_seeds__y+-15_x-25+50__t30000___gradient_trapezoid_5e___65.mp4
+ nucleation_and_motion_in_fluid_2D___3_seeds__y0+-15_x+25-25+50___R60_VD120_OS80_ST20000___gradient_trapezoid_6c___103.mp4
+ nucleation_and_motion_in_fluid_2D___3_seeds__y0+-25_x+25-25+35___R60_VD120_OS80_ST20000___gradient_trapezoid_5e___95.mp4
+ nucleation_and_motion_in_fluid_2Dsurf_in_3D___X_seed__Y_potential__no_gradient__video_120.mp4
+ nucleation_and_motion_in_fluid_2Dsurf_in_3D___X_seed__Y_potential__no_gradient__video_120___speededUp_30_framesPerSecond.mp4
+ nucleation_and_motion_in_fluid_2Dsurf_in_3D___X_seed__Y_potential__no_gradient__video_120___speededUpx10.mp4
+ nucleation_and_motion_in_fluid_2D___velocity_vector___2d__nx_ny_inverted__video_148.mp4
+ nucleation_and_motion_in_fluid_2D___velocity_vector___2d__nx_ny_inverted__video_149.mp4
+ nucleation_and_motion_in_fluid_2D___velocity_vector___2d____video_150.mp4
+ nucleation_and_motion_in_fluid_2D___velocity_vector___2d____video_150___speededUp1st.mp4
+ nucleation_and_motion_in_fluid_2D___velocity_vector___2d____video_150___speededUp2nd.mp4
+ Pictures
+ Public
+ render_video____nucleation_and_motion_in_fluid_2D___1_seed__y0_x0____R8_VD30_OS2_ST100__velocity_quiver__5thcell_150_backup_15-4-2021.py
+ snap
+ software
+ soliton_in_g_well_2D___1_seed__fluid___x-25___R50_VD120_OS80_ST20000___tanh___gradient_parabola__u_xBy10___77.mp4
+ soliton_in_g_well_2D___1_seed__fluid___x-40___R50_VD120_OS80_ST20000___gradient_parabola__u_xBy10___79____info.txt
+ soliton_in_g_well_2D___1_seed__fluid___x-40___R50_VD120_OS80_ST20000___gradient_parabola__u_xBy10___79.mp4
+ Templates
+ texmf
+ u.npy
+ u.txt
+ Videos
+brendan@Desktop:~$ cd software/
+brendan@Desktop:~/software$ ls
+SSHFS_3.7.1  tf2-model-g  tf2-model-g-2  tf2-model-g-3  tf2-model-g-velocity
+brendan@Desktop:~/software$ cd tf2-model-g-velocity/
+brendan@Desktop:~/software/tf2-model-g-velocity$ ls
+brendan@Desktop:~/software/tf2-model-g-velocity$ ls
+brendan@Desktop:~/software/tf2-model-g-velocity$ cd ..
+brendan@Desktop:~/software$ ls
+SSHFS_3.7.1  tf2-model-g  tf2-model-g-2  tf2-model-g-3  tf2-model-g-velocity
+brendan@Desktop:~/software$ git clone https://github.com/frostburn/tf2-model-g.git tf2-model-g-velocity
+Cloning into 'tf2-model-g-velocity'...
+remote: Enumerating objects: 201, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 201 (delta 0), reused 0 (delta 0), pack-reused 198
+Receiving objects: 100% (201/201), 218.46 KiB | 464.00 KiB/s, done.
+Resolving deltas: 100% (112/112), done.
+brendan@Desktop:~/software$ cd tf2-model-g-velocity/
+brendan@Desktop:~/software/tf2-model-g-velocity$ ls
+docs                       integrators          model_g_gallery.py  pde_solver.py    requirements.txt
+fluid_model_g_episodes.py  LICENSE              model_g.py          README.md        sage
+fluid_model_g.py           model_g_episodes.py  params              render_video.py  util.py
+brendan@Desktop:~/software/tf2-model-g-velocity$ git remote -v
+origin	https://github.com/frostburn/tf2-model-g.git (fetch)
+origin	https://github.com/frostburn/tf2-model-g.git (push)
+brendan@Desktop:~/software/tf2-model-g-velocity$ git remote rename origin upstream
+brendan@Desktop:~/software/tf2-model-g-velocity$ git remote -v
+upstream	https://github.com/frostburn/tf2-model-g.git (fetch)
+upstream	https://github.com/frostburn/tf2-model-g.git (push)
+brendan@Desktop:~/software/tf2-model-g-velocity$ git remote add origin https://github.com/bjdarrer/tf2-model-g-velocity.git
+brendan@Desktop:~/software/tf2-model-g-velocity$ git remote -v
+origin	https://github.com/bjdarrer/tf2-model-g-velocity.git (fetch)
+origin	https://github.com/bjdarrer/tf2-model-g-velocity.git (push)
+upstream	https://github.com/frostburn/tf2-model-g.git (fetch)
+upstream	https://github.com/frostburn/tf2-model-g.git (push)
+brendan@Desktop:~/software/tf2-model-g-velocity$ git push -u origin main
+error: src refspec main does not match any
+error: failed to push some refs to 'https://github.com/bjdarrer/tf2-model-g-velocity.git'
+brendan@Desktop:~/software/tf2-model-g-velocity$ git push -u origin master
+Username for 'https://github.com': bjdarrer
+Password for 'https://bjdarrer@github.com': 
+Enumerating objects: 192, done.
+Counting objects: 100% (192/192), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (81/81), done.
+Writing objects: 100% (192/192), 216.27 KiB | 72.09 MiB/s, done.
+Total 192 (delta 109), reused 192 (delta 109)
+remote: Resolving deltas: 100% (109/109), done.
+To https://github.com/bjdarrer/tf2-model-g-velocity.git
+ * [new branch]      master -> master
+Branch 'master' set up to track remote branch 'master' from 'origin'.
+brendan@Desktop:~/software/tf2-model-g-velocity$ 
+

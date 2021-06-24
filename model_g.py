@@ -5,6 +5,8 @@ from pde_solver import PDESolver
 from integrators.model_g import polynomial_order_4_centered as reaction_integrator
 from integrators.model_g import steady_state
 
+# BJD note test - velocity_fields_1 new branch 23 June 2021
+
 DEFAULT_PARAMS = {
     "A": 3.42,
     "B": 13.5,
