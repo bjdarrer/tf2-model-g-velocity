@@ -1,9 +1,14 @@
+# BJD note test - velocity_fields_1 new branch 23 June 2021
 ---
 episode: nucleation_and_motion_in_fluid_2D
 resolution: 240p
-video_duration: 20
-oversampling: 2
-simulation_duration: 100
+#resolution: 360p
+video_duration: 60   # vd: --- originally "20", highest used so far "90"
+oversampling: 10 # os: try "10" later for g-well  --- originally "2" --- max used "20" and "40"
+simulation_duration: 1000  #st:   --- originally "100" , max so far = "5000"; do 20000 later with oversampling = 80
+# st =100 os = 2; st = 1000 os = 10; st = 2000 os = 20; st = 5000 os = 20; st = 10000 os = 40 vd = 90; st = 20000 os = 80 vd = 120;
+# st = 30000 os = 120 vd = 180;
+#simulation_duration: 100
 model_params:
     A: 3.42
     B: 13.5
@@ -16,6 +21,10 @@ model_params:
     density_G: 2.0
     density_X: 1.0
     density_Y: 1.5
-    base-density: 35.0
-    viscosity: 0.4
+    #base-density: 35.0 ~ BJD original here
+    base-density1: 35.0 # BJD added 10.6.2021
+    base-density2: 36.0 # BJD added 10.6.2021
+    base-density3: 37.0 # BJD added 10.6.2021
+    viscosity: 0.4   # tried = 0 ---> nan values 0.007% into run. Original value = 0.4
+    #viscosity: 0.001  # tried = 0.001 ---> nan values 0.007% into run
     speed-of-sound: 1.0
