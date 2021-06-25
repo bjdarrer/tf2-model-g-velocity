@@ -21,10 +21,10 @@ model_params:
     density_G: 2.0
     density_X: 1.0
     density_Y: 1.5
-    base-density: 35.0 #~ BJD original here
-    #base-density1: 35.0 # BJD added 10.6.2021
-    #base-density2: 36.0 # BJD added 10.6.2021
-    #base-density3: 37.0 # BJD added 10.6.2021
+    #base-density: 35.0 #~ BJD original here
+    base-density1: 35.0 # BJD added 10.6.2021
+    base-density2: 36.0 # BJD added 10.6.2021
+    base-density3: 37.0 # BJD added 10.6.2021
     viscosity: 0.4   # tried = 0 ---> nan values 0.007% into run. Original value = 0.4
     #viscosity: 0.001  # tried = 0.001 ---> nan values 0.007% into run
     speed-of-sound: 1.0
