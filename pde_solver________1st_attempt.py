@@ -1,26 +1,38 @@
 import tensorflow as tf
 import numpy as np
 
-
+# BJD note test - velocity_fields_1 new branch 23 June 2021
 class PDESolver(object):
     """
     Base class for partial differential equation solvers
     """
 
-    def __init__(self, dx, dt, shape):
+    def __init__(self, dx, dt, shape_G, shape_X, shape_Y): # shape_G, shape_X, shape_Y ::: put in by David J. 13.6.2021
         self.dx = dx
         self.dt = dt
         self.t = 0
 
         omega = []
-        for s in shape:
+        for s in shape_G:  # shape_G, shape_X, shape_Y, i.e. 3 for loops made; original 1 for loop ::: put in by David J. 13.6.2021
+            wave_numbers = np.arange(s)
+            wave_numbers -= s * (2*wave_numbers > s)  # Deal with TensorFlow's uncentered FFT
+            expected_span = 2*np.pi
+            actual_span = s*dx
+            omega.append(wave_numbers * expected_span / actual_span)
+        for s in shape_X:
+            wave_numbers = np.arange(s)
+            wave_numbers -= s * (2*wave_numbers > s)  # Deal with TensorFlow's uncentered FFT
+            expected_span = 2*np.pi
+            actual_span = s*dx
+            omega.append(wave_numbers * expected_span / actual_span)
+        for s in shape_Y:
             wave_numbers = np.arange(s)
             wave_numbers -= s * (2*wave_numbers > s)  # Deal with TensorFlow's uncentered FFT
             expected_span = 2*np.pi
             actual_span = s*dx
             omega.append(wave_numbers * expected_span / actual_span)
         self.omega = np.meshgrid(*omega, indexing='ij')
-        self.dims = len(shape)
+        self.dims = len(shape_G) + len(shape_X) + len(shape_Y)
         # The naming is a bit off. These are not actual 'kernels'.
         # They are discrete fourier transforms of the periodic versions of the kernels
         if self.dims == 1:
@@ -40,6 +52,16 @@ class PDESolver(object):
             self.omega_x = self.omega[0]
             self.omega_y = self.omega[1]
             self.omega_z = self.omega[2]
+        elif self.dims == 6: # With 3 fluids 2 dimensions # :::: put in by David J. 13.6.2021
+            self.fft = tf.signal.fft2d
+            self.ifft = tf.signal.ifft2d
+
+            self.omega_x = self.omega[0]
+            self.omega_y = self.omega[1]
+            self.omega_X_x = self.omega[2]
+            self.omega_X_y = self.omega[3]
+            self.omega_Y_x = self.omega[4]
+            self.omega_Y_y = self.omega[5]
         else:
             raise ValueError('{} dimensions not supported'.format(self.dims))
 
@@ -56,6 +78,13 @@ class PDESolverDx(PDESolver):
             self.kernel_dx = tf.constant(1j * self.omega_x, 'complex128')
             self.kernel_dy = tf.constant(1j * self.omega_y, 'complex128')
             self.kernel_dz = tf.constant(1j * self.omega_z, 'complex128')
+        elif self.dims == 6:   # :::: put in by David J. 13.6.2021
+            self.kernel_dx = tf.constant(1j * self.omega_x, 'complex128')
+            self.kernel_dy = tf.constant(1j * self.omega_y, 'complex128')
+            self.kernel_X_dx = tf.constant(1j * self.omega_X_x, 'complex128')
+            self.kernel_X_dy = tf.constant(1j * self.omega_X_y, 'complex128')
+            self.kernel_Y_dx = tf.constant(1j * self.omega_Y_x, 'complex128')
+            self.kernel_Y_dy = tf.constant(1j * self.omega_Y_y, 'complex128')
 
 
 class PDESolverDx2(PDESolverDx):
@@ -67,6 +96,10 @@ class PDESolverDx2(PDESolverDx):
             self.kernel_laplacian = tf.constant(-(self.omega_x**2 + self.omega_y**2), 'complex128')
         elif self.dims == 3:
             self.kernel_laplacian = tf.constant(-(self.omega_x**2 + self.omega_y**2 + self.omega_z**2), 'complex128')
+        elif self.dims == 6:  # :::: put in by David J. 13.6.2021
+            self.kernel_laplacian = tf.constant(-(self.omega_x**2 + self.omega_y**2), 'complex128')
+            self.kernel_laplacian_X = tf.constant(-(self.omega_X_x**2 + self.omega_X_y**2), 'complex128')
+            self.kernel_laplacian_Y = tf.constant(-(self.omega_Y_x**2 + self.omega_Y_y**2), 'complex128')
 
 
 if __name__ == '__main__':

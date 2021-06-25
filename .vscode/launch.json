@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/render_video.py",
-            "args" : ["${workspaceFolder}/nucleation_and_motion_in_fluid_2D___2_seeds_16.mp4", "--params", "params/nucleation_and_motion_in_fluid_2D.yaml"],
+            "args" : ["${workspaceFolder}/nucleation_and_motion_in_fluid_2D___1_seed__velocity_field_test_minimal_1.mp4", "--params", "params/nucleation_and_motion_in_fluid_2D.yaml"],
             "console": "integratedTerminal"
         }
     ]
